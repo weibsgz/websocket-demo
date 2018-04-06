@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="sendText">
+    <button id="sendBtn">发送</button>
+    <!-- <div id="recv"></div> -->
+
+    <script>
+        var websocket = new WebSocket('ws://localhost:8001');
+        websocket.onopen = function() {
+           console.log('websocket open..')
+           document.getElementById("sendBtn").onclick = function(){
+                var txt = document.getElementById('sendText').value;
+                if(txt) {
+                    websocket.send(txt)
+                }
+            }
+        }
+
+        websocket.onclose = function() {
+            console.log('websocket close')
+        }
+
+        websocket.onmessage = function(e) {
+            var mes = JSON.parse(e.data)
+            showMessage(mes.type,mes.data)
+        }
+
+        function showMessage(type,data){
+            var div = document.createElement('div')
+
+            if(type === 'enter') {
+                div.style.color = "blue"
+            }
+
+            if(type === 'leave') {
+                div.style.color = "red"
+            }
+
+
+            div.innerHTML = data;
+            document.body.appendChild(div)
+        }
+        
+    </script>
+</body>
+</html>

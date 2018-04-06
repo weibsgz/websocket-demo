@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="sendText">
+    <button id="sendBtn">发送</button>
+    <!-- <div id="recv"></div> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script>
+         var socket = io('ws://localhost:3000');
+          // socket.on('news', function (data) {
+          //   console.log(data);
+          //   socket.emit('my other event', { my: 'data' });
+          // });
+
+          document.getElementById("sendBtn").onclick = function(){
+                var txt = document.getElementById('sendText').value;
+                if(txt) {
+                    socket.emit('message',txt)
+                }
+          }
+
+           socket.on('enter',function(data){
+             showMessage('enter',data)
+          })
+
+          socket.on('message',function(data){
+             showMessage('message',data)
+          })
+
+           socket.on('leave',function(data){
+             showMessage('leave',data)
+          })
+
+
+          function showMessage(type,data){
+            var div = document.createElement('div')
+
+            if(type === 'enter') {
+                div.style.color = "blue"
+            }
+
+            if(type === 'leave') {
+                div.style.color = "red"
+            }
+
+
+            div.innerHTML = data;
+            document.body.appendChild(div)
+         }
+        
+    </script>
+</body>
+</html>
